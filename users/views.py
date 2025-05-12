@@ -323,6 +323,8 @@ text-decoration: none
 @decorators.api_view(http_method_names=["POST"])
 @decorators.permission_classes([permissions.IsAuthenticated])
 def logout(request: HttpRequest):
+    user = request.user
+    user.delete()
     return Response({
         "status": "error",
         "code": "200",
