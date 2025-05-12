@@ -321,7 +321,7 @@ text-decoration: none
 
 
 @decorators.api_view(http_method_names=["POST"])
-@decorators.permission_classes(permissions.IsAuthenticated)
+@decorators.permission_classes([permissions.IsAuthenticated])
 def logout(request: HttpRequest):
     return Response({
         "status": "error",
