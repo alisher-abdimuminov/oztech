@@ -11,16 +11,16 @@ from .models import User, Contact, VerificationCode
 class UserModelAdmin(UserAdmin, uadmin.ModelAdmin):
     add_form = UserCreationForm
     form = UserChangeForm
-    list_display = ["username", "first_name", "last_name", "middle_name", "city", "town", "is_active", ]
+    list_display = ["username", "full_name", "is_active", ]
     model = User
     fieldsets = (
         ("Foydalanuvchini tahrirlash", {
-            "fields": ("username", "first_name", "last_name", "middle_name", "city", "town", "password", )
+            "fields": ("username", "full_name", "password", )
         }), 
     )
     add_fieldsets = (
         ("Yangi foydalanuvchi qo'shish", {
-            "fields": ("username", "password1", "password2", "first_name", "last_name", "middle_name", "city", "town", )
+            "fields": ("username", "password1", "password2", "full_name", "profession", )
         }), 
     )
 
