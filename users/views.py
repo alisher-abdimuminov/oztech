@@ -1,6 +1,5 @@
 import os
 import random
-import datetime
 import sib_api_v3_sdk
 from dotenv import load_dotenv
 from django.db.models import Sum
@@ -8,16 +7,14 @@ from django.http import HttpRequest
 from rest_framework import decorators
 from rest_framework import permissions
 from rest_framework import authentication
-from sib_api_v3_sdk.rest import ApiException
 from rest_framework.response import Response
-from django.shortcuts import redirect, render
 from rest_framework.authtoken.models import Token
 
-from courses.models import Rating, Course, Lesson
+from courses.models import Rating, Lesson
 from courses.serializers import RatingSerializer
 
 from .serializers import UserSerializer
-from .models import User, Contact, VerificationCode, Date
+from .models import User, Contact, VerificationCode
 
 load_dotenv()
 
@@ -75,13 +72,8 @@ def login(request: HttpRequest):
 
 @decorators.api_view(http_method_names=["POST"])
 def signup(request: HttpRequest):
-    print(request.method)
     username = request.data.get("email")
-    first_name = request.data.get("first_name")
-    last_name = request.data.get("last_name")
-    middle_name = request.data.get("middle_name")
-    city = request.data.get("city")
-    town = request.data.get("town")
+    full_name = request.data.get("full_name")
     profession = request.data.get("profession")
     password = request.data.get("password")
 
@@ -97,11 +89,7 @@ def signup(request: HttpRequest):
     
     user = User.objects.create(
         username=username,
-        first_name=first_name,
-        last_name=last_name,
-        middle_name=middle_name,
-        city=city,
-        town=town,
+        full_name=full_name,
         profession=profession,
     )
     user.set_password(password)
@@ -621,12 +609,8 @@ def profile(request: HttpRequest):
         "code": "200",
         "data": {
             "email": user.username,
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-            "middle_name": user.middle_name,
+            "full_name": user.full_name,
             "duration": lessons.get("duration"),
-            "city": user.city,
-            "town": user.town,
             "image": image,
             "rating": rating.data,
         }
@@ -681,28 +665,3 @@ def contact(request: HttpRequest):
                 "telegram": "",
             }
         })
-
-
-def index(request: HttpRequest):
-    if request.method == "POST":
-        course = Course.objects.get(pk=request.POST.get("course"))
-        user = User.objects.get(pk=request.POST.get("student"))
-        time = request.POST.get("time")
-        date = Date.objects.filter(user=user, course=course)
-        if not date:
-            if time == "month":
-                course.students_month.add(user)
-                date = Date.objects.create(user=user, course=course, ended=datetime.datetime.now() + datetime.timedelta(days=182))
-                date.save()
-            else:
-                course.students_year.add(user)
-                date = Date.objects.create(user=user, course=course, ended=datetime.datetime.now() + datetime.timedelta(days=365))
-                date.save()
-        course.save()
-        print(user)
-    user = request.user
-    if user.is_anonymous:
-        return redirect("admin:login")
-    courses = Course.objects.all()
-    users = User.objects.all()
-    return render(request, "index.html", { "courses": courses, "users": users })
