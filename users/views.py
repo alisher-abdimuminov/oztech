@@ -1,7 +1,4 @@
-import os
 import random
-import sib_api_v3_sdk
-from dotenv import load_dotenv
 from django.db.models import Sum
 from django.http import HttpRequest
 from rest_framework import decorators
@@ -12,18 +9,12 @@ from rest_framework.authtoken.models import Token
 
 from courses.models import Rating, Lesson
 from courses.serializers import RatingSerializer
+from utils.mail import send
+from utils.worker import Worker
 
 from .serializers import UserSerializer
 from .models import User, Contact, VerificationCode
 
-load_dotenv()
-
-
-configuration = sib_api_v3_sdk.Configuration()
-configuration.api_key['api-key'] = os.environ.get("API")
-
-api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
-headers = {"Some-Custom-Name":"i-med-team-unique-id"}
 
 
 @decorators.api_view(http_method_names=["POST"])
@@ -289,17 +280,8 @@ text-decoration: none
 </td></tr><tr><td><div class="t34" style="mso-line-height-rule:exactly;mso-line-height-alt:70px;line-height:70px;font-size:1px;display:block;">&nbsp;&nbsp;</div></td></tr></table></td></tr></table></div><div class="gmail-fix" style="display: none; white-space: nowrap; font: 15px courier; line-height: 0;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</div></body>
 </html>
 """
-    sender = { "name": "IMedTeam", "email": "imedteam1@gmail.com" }
-    # sender = { "name": "IMedTeam", "email": "alisher.abdimuminov.2005@gmail.com" }
-    to = [ { "name": "StudentX", "email": user.username } ]
-    send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(to=to, headers=headers, html_content=html_content, sender=sender, subject="Emailingizni tasdiqlang")
-
-    try:
-        response = api_instance.send_transac_email(send_smtp_email)
-        print(response)
-    except Exception as e:
-        print(e)
-        print("dont send")
+    worker = Worker(send, to=user.username, subject="Emailingizni tasdiqlang", body=html_content)
+    worker.start()
 
     return Response({
         "status": "success",
@@ -546,15 +528,9 @@ text-decoration: none
 </td></tr><tr><td><div class="t34" style="mso-line-height-rule:exactly;mso-line-height-alt:70px;line-height:70px;font-size:1px;display:block;">&nbsp;&nbsp;</div></td></tr></table></td></tr></table></div><div class="gmail-fix" style="display: none; white-space: nowrap; font: 15px courier; line-height: 0;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</div></body>
 </html>
 """
-    sender = { "name": "IMedTeam", "email": "imedteam1@gmail.com" }
-    to = [ { "name": "StudentX", "email": user.username } ]
-    send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(to=to, headers=headers, html_content=html_content, sender=sender, subject="Emailingizni tasdiqlang")
 
-    try:
-        response = api_instance.send_transac_email(send_smtp_email)
-        print(response)
-    except:
-        print("dont send")
+    worker = Worker(send, to=user.username, subject="Emailingizni tasdiqlang", body=html_content)
+    worker.start()
 
     return Response({
         "status": "success",
