@@ -8,4 +8,6 @@ class Worker(Thread):
         super().__init__()
 
     def run(self):
+        print("func start")
         self.function(**self.kwargs)
+        print("func end")
