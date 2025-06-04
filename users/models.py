@@ -7,7 +7,6 @@ from .manager import UserManager
 class User(AbstractUser):
     username = models.CharField(max_length=100, unique=True)
     full_name = models.CharField(max_length=100)
-    profession = models.CharField(max_length=100)
     image = models.ImageField(upload_to="images/users", null=True, blank=True)
 
     is_active = models.BooleanField(default=False)

@@ -7,10 +7,10 @@ from rest_framework import authentication
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
-from courses.models import Rating, Lesson
-from courses.serializers import RatingSerializer
 from utils.mail import send
 from utils.worker import Worker
+from courses.models import Rating, Lesson
+from courses.serializers import RatingSerializer
 
 from .serializers import UserSerializer
 from .models import User, Contact, VerificationCode
@@ -65,7 +65,6 @@ def login(request: HttpRequest):
 def signup(request: HttpRequest):
     username = request.data.get("email")
     full_name = request.data.get("full_name")
-    profession = request.data.get("profession")
     password = request.data.get("password")
 
     user = User.objects.filter(username=username)
@@ -81,7 +80,6 @@ def signup(request: HttpRequest):
     user = User.objects.create(
         username=username,
         full_name=full_name,
-        profession=profession,
     )
     user.set_password(password)
     user.save()

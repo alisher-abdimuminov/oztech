@@ -1,9 +1,10 @@
 import requests
 
-url = "https://oztech.uz/api/v1/users/signup/"
+url = "https://oztech.uz/api/v1/users/verify/"
 
 data = {
-    "email": "alisher.abdimuminov.2005@gmail.com",
+    "code": "7324",
+    "email": "samdavfininst1@gmail.com",
     "full_name": "Alisher",
     "profession": "bekorchi",
     "password": "123",
