@@ -93,7 +93,7 @@ class Course(models.Model):
     description = models.TextField(verbose_name="Kurs haqida qisqacha")
     image = models.ImageField(upload_to="images/courses", verbose_name="Rasmi")
     price = models.IntegerField(verbose_name="Narxi")
-    students = models.ManyToManyField(User, related_name="course_students", null=True, blank=True)
+    students = models.ManyToManyField(User, related_name="course_students", blank=True)
     
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -128,8 +128,8 @@ class Module(models.Model):
     name = models.CharField(max_length=500, verbose_name='Nomi')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="Kurs")
     required = models.ForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Talab qilinadi")
-    students = models.ManyToManyField(User, related_name="module_students", null=True, blank=True, verbose_name="Talabalar")
-    finishers = models.ManyToManyField(User, related_name="module_finishers", null=True, blank=True, verbose_name="Bitirganlar")
+    students = models.ManyToManyField(User, related_name="module_students", blank=True, verbose_name="Talabalar")
+    finishers = models.ManyToManyField(User, related_name="module_finishers", blank=True, verbose_name="Bitirganlar")
 
     def __str__(self) -> str:
         return self.name
@@ -178,7 +178,7 @@ class Lesson(models.Model):
     resource = models.FileField(upload_to="files/lessons", null=True, blank=True, verbose_name="Manbaa")
     previous = models.ForeignKey("self", related_name="previous_lesson", on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Oldingi dars")
     next = models.ForeignKey("self", related_name="next_lesson", on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Keyingi dars")
-    finishers = models.ManyToManyField(User, related_name="lesson_finishers", null=True, blank=True, verbose_name="Tugatganlar")
+    finishers = models.ManyToManyField(User, related_name="lesson_finishers", blank=True, verbose_name="Tugatganlar")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
