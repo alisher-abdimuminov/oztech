@@ -19,33 +19,29 @@ from .models import User, Contact, VerificationCode
 
 @decorators.api_view(http_method_names=["POST"])
 def login(request: HttpRequest):
-    username = request.data.get("email")
-    password = request.data.get("password")
+    username = request.data.get("email", "")
+    password = request.data.get("password", "")
     user = User.objects.filter(username=username)
     if not user:
         return Response({
             "status": "error",
-            "code": "404",
-            "data": {
-                "error": "Foydalanuvchi topilmadi",
-            },
+            "code": "login-001", # username not found
+            "data": None
         })
     user = user.first()
 
     if not user.is_active:
         return Response({
             "status": "error",
-            "code": "402",
+            "code": "login-002", # user is not active
             "data": None
         })
 
     if not user.check_password(password):
         return Response({
             "status": "error",
-            "code": "400",
-            "data": {
-                "error": "Parol xato",
-            }
+            "code": "login-003", # password didnot match
+            "data": None
         })
 
     tokens = Token.objects.filter(user=user)
@@ -54,7 +50,7 @@ def login(request: HttpRequest):
     token = Token.objects.get_or_create(user=user)
     return Response({
         "status": "success",
-        "code": "200",
+        "code": "login-004", # login success
         "data": {
             "token": token[0].key
         }
@@ -71,10 +67,8 @@ def signup(request: HttpRequest):
     if user:
         return Response({
             "status": "error",
-            "code": "400",
-            "data": {
-                "error": "Bu email allaqachon ro'yxatdan o'tgan"
-            }
+            "code": "signup-001", # email already exists
+            "data": None
         })
     
     user = User.objects.create(
@@ -284,8 +278,8 @@ text-decoration: none
     print("worker ended")
 
     return Response({
-        "status": "success",
-        "code": "200",
+        "status": "success", # signup success
+        "code": "signup-002",
         "data": None
     })
 
@@ -296,8 +290,8 @@ def logout(request: HttpRequest):
     user = request.user
     user.delete()
     return Response({
-        "status": "error",
-        "code": "200",
+        "status": "success",
+        "code": "logout-001",
         "data": None
     })
 
@@ -314,26 +308,26 @@ def verify_code(request: HttpRequest):
             code.user.save()
             return Response({
                 "status": "success",
-                "code": "200",
+                "code": "verify-code-001", # success
                 "data": None
             })
         else:
             return Response({
                 "status": "error",
-                "code": "404",
+                "code": "verify-code-002", # code not found 
                 "data": None
             })
     else:
         return Response({
-            "status": "success",
-            "code": "400",
+            "status": "error",
+            "code": "verify-code-003", # code is required
             "data": None
         })
 
 
 @decorators.api_view(http_method_names=["POST"])
 def generate_code(request: HttpRequest):
-    username = request.data.get("email")
+    username = request.data.get("email", "")
     user = User.objects.get(username=username)
     code = VerificationCode.objects.create(user=user, code=random.randint(1000, 9999))
     html_content = """<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -534,7 +528,7 @@ text-decoration: none
 
     return Response({
         "status": "success",
-        "code": "200",
+        "code": "generate-code-001", # success
         "data": None
     })
 
@@ -549,7 +543,7 @@ def change_password(requset: HttpRequest):
         user.save()
         return Response({
             "status": "success",
-            "code": "200",
+            "code": "change-password-001", # success
             "data": None
         })
     else:
@@ -558,7 +552,7 @@ def change_password(requset: HttpRequest):
         user.save()
         return Response({
             "status": "success",
-            "code": "200",
+            "code": "change-password-002", # success (with email, password)
             "data": None
         })
 
@@ -582,7 +576,7 @@ def profile(request: HttpRequest):
 
     return Response({
         "status": "success",
-        "code": "200",
+        "code": "profile-001", # success
         "data": {
             "email": user.username,
             "full_name": user.full_name,
@@ -603,16 +597,14 @@ def edit_profile(request: HttpRequest):
         user.save()
         return Response({
             "status": "success",
-            "code": "200",
+            "code": "edit-profile-001", # success
             "data": None
         })
     else:
         return Response({
             "status": "error",
-            "code": "400",
-            "data": {
-                "error": "Majburiy maydonlarni to'ldiring"
-            }
+            "code": "edit-profile-002", # fill the required fields
+            "data": None
         })
 
 
@@ -624,7 +616,7 @@ def contact(request: HttpRequest):
     if contact:
         return Response({
             "status": "success",
-            "code": "200",
+            "code": "contact-001", # success
             "data": {
                 "name": contact.name,
                 "phone": contact.phone,
@@ -634,7 +626,7 @@ def contact(request: HttpRequest):
     else:
         return Response({
             "status": "success",
-            "code": "200",
+            "code": "contact-002", # success (with default)
             "data": {
                 "name": "OzTech",
                 "phone": "",
