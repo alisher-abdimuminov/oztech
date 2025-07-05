@@ -30,12 +30,12 @@ def login(request: HttpRequest):
         })
     user = user.first()
 
-    if not user.is_active:
-        return Response({
-            "status": "error",
-            "code": "login-002", # user is not active
-            "data": None
-        })
+    # if not user.is_active:
+    #     return Response({
+    #         "status": "error",
+    #         "code": "login-002", # user is not active
+    #         "data": None
+    #     })
 
     if not user.check_password(password):
         return Response({
@@ -272,10 +272,10 @@ text-decoration: none
 </td></tr><tr><td><div class="t34" style="mso-line-height-rule:exactly;mso-line-height-alt:70px;line-height:70px;font-size:1px;display:block;">&nbsp;&nbsp;</div></td></tr></table></td></tr></table></div><div class="gmail-fix" style="display: none; white-space: nowrap; font: 15px courier; line-height: 0;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</div></body>
 </html>
 """
-    print("worker started")
-    worker = Worker(send, to=user.username, subject="Emailingizni tasdiqlang", body=html_content)
-    worker.start()
-    print("worker ended")
+    # print("worker started")
+    # worker = Worker(send, to=user.username, subject="Emailingizni tasdiqlang", body=html_content)
+    # worker.start()
+    # print("worker ended")
 
     return Response({
         "status": "success", # signup success
@@ -299,7 +299,7 @@ def logout(request: HttpRequest):
 @decorators.api_view(http_method_names=["POST"])
 def verify_code(request: HttpRequest):
     c = request.data.get("code")
-    username = request.data.get("email")
+    username = request.data.get("email", "")
     code = VerificationCode.objects.filter(user__username=username)
     if code:
         code = code.last()
@@ -314,13 +314,13 @@ def verify_code(request: HttpRequest):
         else:
             return Response({
                 "status": "error",
-                "code": "verify-code-002", # code not found 
+                "code": "verify-code-002", # code is invalid
                 "data": None
             })
     else:
         return Response({
             "status": "error",
-            "code": "verify-code-003", # code is required
+            "code": "verify-code-003", # code is not found
             "data": None
         })
 
