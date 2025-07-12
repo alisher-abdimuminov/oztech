@@ -4,7 +4,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 
-from .models import User, Contact, VerificationCode
+from .models import User, Contact
 
 
 @admin.register(User)
@@ -29,10 +29,6 @@ class UserModelAdmin(UserAdmin, uadmin.ModelAdmin):
 class ContactModelAdmin(uadmin.ModelAdmin):
     list_display = ["name", "phone", "telegram"]
 
-
-@admin.register(VerificationCode)
-class CodeModelAdmin(uadmin.ModelAdmin):
-    list_display = ["user", "code"]
 
 admin.site.unregister(Group)
 
