@@ -15,7 +15,7 @@ class UserModelAdmin(UserAdmin, uadmin.ModelAdmin):
     model = User
     fieldsets = (
         ("Foydalanuvchini tahrirlash", {
-            "fields": ("username", "full_name", "password", )
+            "fields": ("username", "full_name", "password", "is_active", )
         }), 
     )
     add_fieldsets = (

@@ -9,8 +9,6 @@ class User(AbstractUser):
     full_name = models.CharField(max_length=100)
     image = models.ImageField(upload_to="images/users", null=True, blank=True)
 
-    is_active = models.BooleanField(default=False)
-
     objects = UserManager()
 
     USERNAME_FIELD = "username"
