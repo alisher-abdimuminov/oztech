@@ -558,8 +558,8 @@ def change_password(requset: HttpRequest):
 
 
 @decorators.api_view(http_method_names=["GET"])
-@decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
 @decorators.authentication_classes(authentication_classes=[authentication.TokenAuthentication])
+@decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
 def profile(request: HttpRequest):
     user: User = request.user
     rating_obj = Rating.objects.filter(user=user)
