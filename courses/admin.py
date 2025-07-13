@@ -9,9 +9,9 @@ from .models import (
     Question,
     Quiz,
     Subject,
-    Rating,
-    CourseRating,
     Permission,
+    Video,
+    Resource
 )
 
 
@@ -65,3 +65,14 @@ class LessonModelAdmin(uadmin.ModelAdmin):
 @admin.register(Permission)
 class PermissionModelAdmin(uadmin.ModelAdmin):
     list_display = ["user", "course", "type", "ended"]
+
+
+@admin.register(Video)
+class VideoModelAdmin(uadmin.ModelAdmin):
+    list_display = ["lesson", "name", ]
+
+
+@admin.register(Resource)
+class ResourceModelAdmin(uadmin.ModelAdmin):
+    list_display = ["lesson", "name", ]
+

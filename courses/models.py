@@ -203,6 +203,7 @@ class Lesson(models.Model):
 
 
 class Video(models.Model):
+    name = models.CharField(max_length=100, null=True, blank=True)
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
     url = models.URLField(null=True, blank=True, verbose_name="Video link (YouTubue)")
 
@@ -211,6 +212,7 @@ class Video(models.Model):
     
 
 class Resource(models.Model):
+    name = models.CharField(max_length=100, null=True, blank=True)
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
     url = models.FileField(upload_to="files/lessons", null=True, blank=True, verbose_name="Manbaa")
 
