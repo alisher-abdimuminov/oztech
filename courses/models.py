@@ -210,6 +210,10 @@ class Video(models.Model):
     def __str__(self):
         return self.lesson.name
     
+    class Meta:
+        verbose_name = "Video"
+        verbose_name_plural = "Videolar"
+    
 
 class Resource(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True)
@@ -218,6 +222,10 @@ class Resource(models.Model):
 
     def __str__(self):
         return self.lesson.name
+    
+    class Meta:
+        verbose_name = "Manba"
+        verbose_name_plural = "Manbalar"
 
 
 class Rating(models.Model):
