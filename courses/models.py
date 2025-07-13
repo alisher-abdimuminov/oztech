@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from datetime import date, timedelta
@@ -157,9 +156,6 @@ class Module(models.Model):
     def lessons(self):
         return Lesson.objects.filter(module=self)
     
-    def count_quizzes(self):
-        return Lesson.objects.filter(type="quiz").count()
-    
     def video_length(self) -> int:
         return Lesson.objects.filter(module=self).aggregate(duration=models.Sum("duration")).get("duration") or 0
 
@@ -174,8 +170,6 @@ class Lesson(models.Model):
     type = models.CharField(max_length=100, choices=LESSON_TYPE, verbose_name="Turi")
     quiz = models.ForeignKey(Quiz, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Test")
     duration = models.IntegerField(default=60, verbose_name="Davomiyligi")
-    video = models.URLField(null=True, blank=True, verbose_name="Video link (YouTubue)")
-    resource = models.FileField(upload_to="files/lessons", null=True, blank=True, verbose_name="Manbaa")
     previous = models.ForeignKey("self", related_name="previous_lesson", on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Oldingi dars")
     next = models.ForeignKey("self", related_name="next_lesson", on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Keyingi dars")
     finishers = models.ManyToManyField(User, related_name="lesson_finishers", blank=True, verbose_name="Tugatganlar")
@@ -206,6 +200,22 @@ class Lesson(models.Model):
     class Meta:
         verbose_name = "Dars"
         verbose_name_plural = "Darslar"
+
+
+class Video(models.Model):
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    url = models.URLField(null=True, blank=True, verbose_name="Video link (YouTubue)")
+
+    def __str__(self):
+        return self.lesson.name
+    
+
+class Resource(models.Model):
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    url = models.FileField(upload_to="files/lessons", null=True, blank=True, verbose_name="Manbaa")
+
+    def __str__(self):
+        return self.lesson.name
 
 
 class Rating(models.Model):

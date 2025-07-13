@@ -14,7 +14,21 @@ from .models import (
     Rating,
     Subject,
     Permission,
+    Video,
+    Resource
 )
+
+
+class VideosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Video
+        fields = ("url")
+
+
+class ResourcesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Resource
+        fields = ("url")
 
 
 class SubjectSerializer(serializers.ModelSerializer):
@@ -108,6 +122,8 @@ class LessonGETSerializer(serializers.ModelSerializer):
     quiz = QuizGETSerializer(Quiz.objects.all(), many=False)
     previous = LessonGETLittleSerializer(Lesson.objects.all(), many=False)
     next = LessonGETLittleSerializer(Lesson.objects.all(), many=False)
+    videos = serializers.SerializerMethodField("get_videos")
+    resources = serializers.SerializerMethodField("get_resources")
     
     def check_open(self, obj):
         request = self.context.get("request")
@@ -121,9 +137,17 @@ class LessonGETSerializer(serializers.ModelSerializer):
                 return True
         return True
     
+    def get_videos(self, obj: Lesson):
+        videos = Video.objects.filter(lesson=obj)
+        return VideosSerializer(videos, many=True).data
+    
+    def get_resources(self, obj: Lesson):
+        resources = Resource.objects.filter(lesson=obj)
+        return ResourcesSerializer(resources, many=True).data
+    
     class Meta:
         model = Lesson
-        fields = ("id", "name", "type", "video", "duration", "resource", "quiz", "previous", "next", "is_open", "created",)
+        fields = ("id", "name", "type", "videos", "duration", "resources", "quiz", "previous", "next", "is_open", "created",)
 
 
 class ModuleGETSerializer(serializers.ModelSerializer):
