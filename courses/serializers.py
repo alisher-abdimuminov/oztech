@@ -22,13 +22,13 @@ from .models import (
 class VideosSerializer(serializers.ModelSerializer):
     class Meta:
         model = Video
-        fields = ("url")
+        fields = ("url", )
 
 
 class ResourcesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Resource
-        fields = ("url")
+        fields = ("url", )
 
 
 class SubjectSerializer(serializers.ModelSerializer):
