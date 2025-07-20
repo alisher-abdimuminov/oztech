@@ -106,7 +106,7 @@ def get_module(request: HttpRequest, pk1: int, pk2: int):
 @decorators.authentication_classes(authentication_classes=[authentication.TokenAuthentication])
 def get_lesson(request: HttpRequest, pk1: int, pk2: int, pk3: int):
     lesson_obj = Lesson.objects.get(pk=pk3)
-    lesson = LessonGETSerializer(lesson_obj, many=False)
+    lesson = LessonGETSerializer(lesson_obj, many=False, context={ "request": request })
     return Response({
         "status": "success",
         "code": "200",

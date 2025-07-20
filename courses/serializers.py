@@ -147,7 +147,7 @@ class LessonGETSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Lesson
-        fields = ("id", "name", "type", "videos", "duration", "resources", "quiz", "previous", "next", "is_open", "created",)
+        fields = ("id", "name", "type", "videos", "duration", "resources", "quiz", "previous", "next", "is_open", "created")
 
 
 class ModuleGETSerializer(serializers.ModelSerializer):
