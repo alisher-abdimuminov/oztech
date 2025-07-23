@@ -58,9 +58,9 @@ class ModuleModelAdmin(uadmin.ModelAdmin):
 class SubjectModelAdmin(uadmin.ModelAdmin):
     list_display = ["name", ]
 
-@admin.register(Quiz)
-class QuizModelAdmin(uadmin.ModelAdmin):
-    list_display = ["name", ]
+# @admin.register(Quiz)
+# class QuizModelAdmin(uadmin.ModelAdmin):
+#     list_display = ["name", ]
 
 
 @admin.register(Lesson)
