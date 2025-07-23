@@ -11,13 +11,19 @@ from .models import (
     Subject,
     Permission,
     Video,
-    Resource
+    Resource,
+    Test,
 )
 
 
-class AnswerTabulrInline(uadmin.StackedInline):
-    model = Answer
-    extra = 0
+# class AnswerTabulrInline(uadmin.StackedInline):
+#     model = Answer
+#     extra = 0
+
+
+@admin.register(Test)
+class TestModelAdmin(uadmin.ModelAdmin):
+    list_display = ["name", "url", ]
 
 
 class LessonTabularInline(uadmin.StackedInline):
@@ -42,10 +48,10 @@ class ModuleModelAdmin(uadmin.ModelAdmin):
     inlines = [LessonTabularInline]
 
 
-@admin.register(Question)
-class QuestionModelAdmin(uadmin.ModelAdmin):
-    list_display = ["question", "type", ]
-    inlines = [AnswerTabulrInline]
+# @admin.register(Question)
+# class QuestionModelAdmin(uadmin.ModelAdmin):
+#     list_display = ["question", "type", ]
+#     inlines = [AnswerTabulrInline]
 
 
 @admin.register(Subject)
