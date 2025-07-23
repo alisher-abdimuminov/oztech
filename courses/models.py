@@ -164,11 +164,23 @@ class Module(models.Model):
         verbose_name_plural = "Modullar"
 
 
+class Test(models.Model):
+    name = models.CharField(max_length=100, null=True, blank=True)
+    url = models.FileField(upload_to="files/lessons/tests", null=True, blank=True, verbose_name="Test manbaa")
+
+    def __str__(self):
+        return self.lesson.name
+    
+    class Meta:
+        verbose_name = "Test manba"
+        verbose_name_plural = "Test manbalar"
+
+
 class Lesson(models.Model):
     name = models.CharField(max_length=100, verbose_name="Nomi")
     module = models.ForeignKey(Module, on_delete=models.CASCADE, verbose_name="Modul")
     type = models.CharField(max_length=100, choices=LESSON_TYPE, verbose_name="Turi")
-    quiz = models.ForeignKey(Quiz, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Test")
+    test = models.ForeignKey(Test, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Test")
     duration = models.IntegerField(default=60, verbose_name="Davomiyligi")
     previous = models.ForeignKey("self", related_name="previous_lesson", on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Oldingi dars")
     next = models.ForeignKey("self", related_name="next_lesson", on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Keyingi dars")

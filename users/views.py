@@ -86,6 +86,7 @@ def logout(request: HttpRequest):
         "data": None
     })
 
+
 @decorators.api_view(http_method_names=["POST"])
 def change_password(requset: HttpRequest):
     user = requset.user

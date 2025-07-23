@@ -15,8 +15,15 @@ from .models import (
     Subject,
     Permission,
     Video,
-    Resource
+    Resource,
+    Test,
 )
+
+
+class TestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Test
+        fields = ("url", )
 
 
 class VideosSerializer(serializers.ModelSerializer):
@@ -119,7 +126,7 @@ class LessonGETSerializer(serializers.ModelSerializer):
     requires_context = True
 
     is_open = serializers.SerializerMethodField("check_open")
-    quiz = QuizGETSerializer(Quiz.objects.all(), many=False)
+    test = TestSerializer()
     previous = LessonGETLittleSerializer(Lesson.objects.all(), many=False)
     next = LessonGETLittleSerializer(Lesson.objects.all(), many=False)
     videos = serializers.SerializerMethodField("get_videos")
@@ -147,7 +154,7 @@ class LessonGETSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Lesson
-        fields = ("id", "name", "type", "videos", "duration", "resources", "quiz", "previous", "next", "is_open", "created")
+        fields = ("id", "name", "type", "videos", "duration", "resources", "test", "previous", "next", "is_open", "created")
 
 
 class ModuleGETSerializer(serializers.ModelSerializer):
