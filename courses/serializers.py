@@ -126,11 +126,11 @@ class LessonGETSerializer(serializers.ModelSerializer):
     requires_context = True
 
     is_open = serializers.SerializerMethodField("check_open")
-    test = TestSerializer()
     previous = LessonGETLittleSerializer(Lesson.objects.all(), many=False)
     next = LessonGETLittleSerializer(Lesson.objects.all(), many=False)
     videos = serializers.SerializerMethodField("get_videos")
     resources = serializers.SerializerMethodField("get_resources")
+    tests = serializers.SerializerMethodField("get_tests")
     
     def check_open(self, obj):
         request = self.context.get("request")
@@ -152,9 +152,13 @@ class LessonGETSerializer(serializers.ModelSerializer):
         resources = Resource.objects.filter(lesson=obj)
         return ResourcesSerializer(resources, many=True).data
     
+    def get_tests(self, obj: Lesson):
+        tests = Test.objects.filter(lesson=obj)
+        return TestSerializer(tests, many=True).data
+    
     class Meta:
         model = Lesson
-        fields = ("id", "name", "type", "videos", "duration", "resources", "test", "previous", "next", "is_open", "created")
+        fields = ("id", "name", "type", "videos", "duration", "resources", "tests", "previous", "next", "is_open", "created")
 
 
 class ModuleGETSerializer(serializers.ModelSerializer):
