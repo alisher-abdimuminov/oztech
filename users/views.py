@@ -1,5 +1,6 @@
 from django.db.models import Sum
 from django.http import HttpRequest
+from django.shortcuts import render
 from rest_framework import decorators
 from rest_framework import permissions
 from rest_framework import authentication
@@ -12,6 +13,9 @@ from courses.serializers import RatingSerializer
 from .models import User, Contact
 from .serializers import UserSerializer
 
+
+def index(request):
+    return render(request, "index.html")
 
 
 @decorators.api_view(http_method_names=["POST"])
