@@ -230,7 +230,7 @@ class CoursesGETSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ("id", "name", "user", "subject", "description", "image", "price", "percentage", "length", "count_modules", "count_lessons", "count_students", "is_open", "rest", "created", )
+        fields = ("id", "name", "user", "subject", "description", "image", "price", "percentage", "length", "count_modules", "count_lessons", "count_students", "is_open", "is_public", "rest", "created", )
 
 
 class CourseGETSerializer(serializers.ModelSerializer):
@@ -276,13 +276,13 @@ class CourseGETSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ("id", "name", "user", "subject", "description", "image", "price", "percentage", "length", "count_modules", "count_lessons", "count_students", "count_quizzes", "modules", "is_open", "created", )
+        fields = ("id", "name", "user", "subject", "description", "image", "price", "percentage", "length", "count_modules", "count_lessons", "count_students", "count_quizzes", "modules", "is_open", "is_public", "created", )
 
 
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
-        fields = ("id", "name", )
+        fields = ("id", "name", "is_public", )
 
 
 class ModuleSerializer(serializers.ModelSerializer):

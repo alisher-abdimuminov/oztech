@@ -93,6 +93,7 @@ class Course(models.Model):
     image = models.ImageField(upload_to="images/courses", verbose_name="Rasmi")
     price = models.IntegerField(verbose_name="Narxi")
     students = models.ManyToManyField(User, related_name="course_students", blank=True)
+    is_public = models.BooleanField(default=False)
     
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
