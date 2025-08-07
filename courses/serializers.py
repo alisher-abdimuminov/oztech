@@ -96,7 +96,7 @@ class LessonGETLittleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lesson
-        fields = ("id", "name", "type", "duration", "is_open", )
+        fields = ("id", "name", "type", "duration", "is_open", "is_public", )
 
 
 class ModuleRequiredSerializer(serializers.ModelSerializer):
@@ -158,7 +158,7 @@ class LessonGETSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Lesson
-        fields = ("id", "name", "type", "videos", "duration", "resources", "tests", "previous", "next", "is_open", "created")
+        fields = ("id", "name", "type", "videos", "duration", "resources", "tests", "previous", "next", "is_open", "is_public", "created")
 
 
 class ModuleGETSerializer(serializers.ModelSerializer):
@@ -294,7 +294,7 @@ class ModuleSerializer(serializers.ModelSerializer):
 class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
-        fields = ("id", "name", )
+        fields = ("id", "name", "is_public", )
 
 
 class RatingSerializer(serializers.ModelSerializer):

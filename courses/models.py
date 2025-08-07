@@ -173,6 +173,7 @@ class Lesson(models.Model):
     previous = models.ForeignKey("self", related_name="previous_lesson", on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Oldingi dars")
     next = models.ForeignKey("self", related_name="next_lesson", on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Keyingi dars")
     finishers = models.ManyToManyField(User, related_name="lesson_finishers", blank=True, verbose_name="Tugatganlar")
+    is_public = models.BooleanField(default=False, verbose_name="Ochiq dars")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

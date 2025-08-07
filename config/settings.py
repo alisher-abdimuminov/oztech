@@ -107,17 +107,17 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # CORS_ALLOW_CREDENTIALS = True
 # CSRF_TRUSTED_ORIGINS = ["https://oztech.uz", "http://localhost:8000"]
 
-LANGUAGE_CODE = "uz"
+# LANGUAGE_CODE = "uz"
 
-USE_I18N = True
+# USE_I18N = True
 
-LANGUAGES = (
-    ("uz", "Uzbek"),
-    ("en", "English"),
-)
+# LANGUAGES = (
+#     ("uz", "Uzbek"),
+#     ("en", "English"),
+# )
 
-UNFOLD = {
-    "SHOW_LANGUAGES": True,
-}
+# UNFOLD = {
+#     "SHOW_LANGUAGES": True,
+# }
 
-LOCALE_PATHS = (os.path.join(BASE_DIR, "locale"),)
+# LOCALE_PATHS = (os.path.join(BASE_DIR, "locale"),)
