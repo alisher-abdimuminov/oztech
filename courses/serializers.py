@@ -23,19 +23,19 @@ from .models import (
 class TestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Test
-        fields = ("url", )
+        fields = ("url",)
 
 
 class VideosSerializer(serializers.ModelSerializer):
     class Meta:
         model = Video
-        fields = ("url", )
+        fields = ("url",)
 
 
 class ResourcesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Resource
-        fields = ("url", )
+        fields = ("url",)
 
 
 class SubjectSerializer(serializers.ModelSerializer):
@@ -47,12 +47,21 @@ class SubjectSerializer(serializers.ModelSerializer):
 class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("first_name", "last_name", "image", )
+        fields = (
+            "first_name",
+            "last_name",
+            "image",
+        )
+
 
 class AnswerGETSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer
-        fields = ("value_1", "value_2", "is_correct", )
+        fields = (
+            "value_1",
+            "value_2",
+            "is_correct",
+        )
 
 
 class QuestionGETSerializer(serializers.ModelSerializer):
@@ -65,7 +74,11 @@ class QuestionGETSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ("question", "type", "answers", )
+        fields = (
+            "question",
+            "type",
+            "answers",
+        )
 
 
 class QuizGETSerializer(serializers.ModelSerializer):
@@ -73,7 +86,11 @@ class QuizGETSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Quiz
-        fields = ("id", "name", "questions", )
+        fields = (
+            "id",
+            "name",
+            "questions",
+        )
 
 
 class LessonGETLittleSerializer(serializers.ModelSerializer):
@@ -85,7 +102,7 @@ class LessonGETLittleSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         print(request)
         if request:
-            if (obj.has_previous()):
+            if obj.has_previous():
                 if request.user in obj.previous.finishers.all():
                     return True
                 else:
@@ -96,7 +113,14 @@ class LessonGETLittleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lesson
-        fields = ("id", "name", "type", "duration", "is_open", "is_public", )
+        fields = (
+            "id",
+            "name",
+            "type",
+            "duration",
+            "is_open",
+            "is_public",
+        )
 
 
 class ModuleRequiredSerializer(serializers.ModelSerializer):
@@ -104,8 +128,9 @@ class ModuleRequiredSerializer(serializers.ModelSerializer):
     lessons = serializers.SerializerMethodField("get_lessons")
 
     def get_lessons(self, obj):
-        return LessonGETLittleSerializer(obj.lessons(), many=True, context=self.context).data
-    
+        return LessonGETLittleSerializer(
+            obj.lessons(), many=True, context=self.context
+        ).data
 
     def is_open_func(self, obj: Module):
         request = self.context.get("request")
@@ -117,9 +142,15 @@ class ModuleRequiredSerializer(serializers.ModelSerializer):
                 return True
             return False
         return False
+
     class Meta:
         model = Module
-        fields = ("id", "name", "is_open", "lessons", )
+        fields = (
+            "id",
+            "name",
+            "is_open",
+            "lessons",
+        )
 
 
 class LessonGETSerializer(serializers.ModelSerializer):
@@ -131,11 +162,11 @@ class LessonGETSerializer(serializers.ModelSerializer):
     videos = serializers.SerializerMethodField("get_videos")
     resources = serializers.SerializerMethodField("get_resources")
     tests = serializers.SerializerMethodField("get_tests")
-    
+
     def check_open(self, obj):
         request = self.context.get("request")
         if request:
-            if (obj.has_previous()):
+            if obj.has_previous():
                 if request.user in obj.previous.finishers.all():
                     return True
                 else:
@@ -143,22 +174,35 @@ class LessonGETSerializer(serializers.ModelSerializer):
             else:
                 return True
         return True
-    
+
     def get_videos(self, obj: Lesson):
         videos = Video.objects.filter(lesson=obj)
         return VideosSerializer(videos, many=True).data
-    
+
     def get_resources(self, obj: Lesson):
         resources = Resource.objects.filter(lesson=obj)
         return ResourcesSerializer(resources, many=True).data
-    
+
     def get_tests(self, obj: Lesson):
         tests = Test.objects.filter(lesson=obj)
         return TestSerializer(tests, many=True).data
-    
+
     class Meta:
         model = Lesson
-        fields = ("id", "name", "type", "videos", "duration", "resources", "tests", "previous", "next", "is_open", "is_public", "created")
+        fields = (
+            "id",
+            "name",
+            "type",
+            "videos",
+            "duration",
+            "resources",
+            "tests",
+            "previous",
+            "next",
+            "is_open",
+            "is_public",
+            "created",
+        )
 
 
 class ModuleGETSerializer(serializers.ModelSerializer):
@@ -178,11 +222,21 @@ class ModuleGETSerializer(serializers.ModelSerializer):
                 return True
             return False
         return False
-    
 
     class Meta:
         model = Module
-        fields = ("id", "name", "required", "video_length", "count_students", "count_finishers", "count_lessons", "students", "lessons", "is_open")
+        fields = (
+            "id",
+            "name",
+            "required",
+            "video_length",
+            "count_students",
+            "count_finishers",
+            "count_lessons",
+            "students",
+            "lessons",
+            "is_open",
+        )
 
 
 class CoursesGETSerializer(serializers.ModelSerializer):
@@ -230,7 +284,24 @@ class CoursesGETSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ("id", "name", "user", "subject", "description", "image", "price", "percentage", "length", "count_modules", "count_lessons", "count_students", "is_open", "is_public", "rest", "created", )
+        fields = (
+            "id",
+            "name",
+            "user",
+            "subject",
+            "description",
+            "image",
+            "price",
+            "percentage",
+            "length",
+            "count_modules",
+            "count_lessons",
+            "count_students",
+            "is_open",
+            "is_public",
+            "rest",
+            "created",
+        )
 
 
 class CourseGETSerializer(serializers.ModelSerializer):
@@ -262,7 +333,7 @@ class CourseGETSerializer(serializers.ModelSerializer):
         modules_obj = Module.objects.filter(course=obj)
         modules = ModuleRequiredSerializer(modules_obj, many=True, context=self.context)
         return modules.data
-    
+
     def percentage_func(self, obj):
         request = self.context.get("request")
         user = request.user
@@ -273,42 +344,84 @@ class CourseGETSerializer(serializers.ModelSerializer):
             return 0
         return count * 100 / obj.count_lessons()
 
-
     class Meta:
         model = Course
-        fields = ("id", "name", "user", "subject", "description", "image", "price", "percentage", "length", "count_modules", "count_lessons", "count_students", "count_quizzes", "modules", "is_open", "is_public", "created", )
+        fields = (
+            "id",
+            "name",
+            "user",
+            "subject",
+            "description",
+            "image",
+            "price",
+            "percentage",
+            "length",
+            "count_modules",
+            "count_lessons",
+            "count_students",
+            "count_quizzes",
+            "cout_resources",
+            "modules",
+            "is_open",
+            "is_public",
+            "created",
+        )
 
 
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
-        fields = ("id", "name", "is_public", )
+        fields = (
+            "id",
+            "name",
+            "is_public",
+        )
 
 
 class ModuleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Module
-        fields = ("id", "name", )
+        fields = (
+            "id",
+            "name",
+        )
 
 
 class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
-        fields = ("id", "name", "is_public", )
+        fields = (
+            "id",
+            "name",
+            "is_public",
+        )
 
 
 class RatingSerializer(serializers.ModelSerializer):
     course = CourseSerializer(Course, many=False)
     module = ModuleSerializer(Module, many=False)
     lesson = LessonSerializer(Lesson, many=False)
+
     class Meta:
         model = Rating
-        fields = ("course", "module", "lesson", "score", "percent", "created", )
+        fields = (
+            "course",
+            "module",
+            "lesson",
+            "score",
+            "percent",
+            "created",
+        )
 
 
 class CourseRatingSerializer(serializers.ModelSerializer):
     course = CourseSerializer(Course, many=False)
     user = UserSerializer(User, many=False)
+
     class Meta:
         model = CourseRating
-        fields = ("user", "course", "score", )
+        fields = (
+            "user",
+            "course",
+            "score",
+        )
