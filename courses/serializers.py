@@ -360,7 +360,7 @@ class CourseGETSerializer(serializers.ModelSerializer):
             "count_lessons",
             "count_students",
             "count_quizzes",
-            "cout_resources",
+            "count_resources",
             "modules",
             "is_open",
             "is_public",
