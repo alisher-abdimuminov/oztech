@@ -117,7 +117,7 @@ class Course(models.Model):
         return Lesson.objects.filter(module__course=self, type="quiz").count()
     
     def count_resources(self) -> int:
-        return Resource.objects.filter(lesson__course=self).count()
+        return Resource.objects.filter(lesson__module__course=self).count()
 
     def length(self):
         return Lesson.objects.filter(module__course=self).aggregate(models.Sum("duration")).get("duration__sum") or 0
