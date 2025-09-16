@@ -45,7 +45,7 @@ def read_all(notifications: Notification, user: User):
 def get_notifications(request: HttpRequest):
     notifications = Notification.objects.exclude(readers=request.user)
 
-    worker = Worker(read_all, { "notifications": notifications, "user": request.user})
+    worker = Worker(read_all, notifications=notifications, user=request.user)
     worker.start()
 
     return Response({
