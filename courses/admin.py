@@ -2,23 +2,28 @@ from unfold import admin as uadmin
 from django.contrib import admin
 
 from .models import (
-    Answer,
     Course,
     Lesson,
     Module,
-    Question,
-    Quiz,
     Subject,
     Permission,
     Video,
     Resource,
     Test,
+    Banner,
+    Notification,
 )
 
 
-# class AnswerTabulrInline(uadmin.StackedInline):
-#     model = Answer
-#     extra = 0
+
+@admin.register(Banner)
+class BannerModelAdmin(uadmin.ModelAdmin):
+    list_display = ["title", "link", ]
+
+
+@admin.register(Notification)
+class NotificationModelAdmin(uadmin.ModelAdmin):
+    list_display = ["title", "description",]
 
 
 @admin.register(Test)

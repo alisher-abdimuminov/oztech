@@ -17,7 +17,31 @@ from .models import (
     Video,
     Resource,
     Test,
+    Notification,
+    Banner,
 )
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = (
+            "id",
+            "title",
+            "description",
+        )
+
+
+class BannerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Banner
+        fields = (
+            "id",
+            "title",
+            "description",
+            "image",
+            "link",
+        )
 
 
 class TestSerializer(serializers.ModelSerializer):

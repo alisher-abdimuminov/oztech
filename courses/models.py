@@ -18,6 +18,11 @@ QUESTION_TYPE = (
     ("matchable", "Mos keladigan"),
 )
 
+NOTIFCATION_RECEIVER_TYPE = (
+    ("all", "All"),
+    ("specific", "Specific")
+)
+
 PERMISSION_TYPE = (
     ("monthly", "6 oylik"),
     ("yearly", "1 yillik"),
@@ -293,3 +298,24 @@ def notify_model_saved(sender, instance: Lesson, created, **kwargs):
     if instance.previous:
         instance.previous.next = instance
         instance.previous.save()
+
+
+class Notification(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    type = models.CharField(max_length=100)
+    receivers = models.ManyToManyField(User, related_name="notification_receivers", blank=True)
+    readers = models.ManyToManyField(User, related_name="notification_readers", blank=True)
+
+    def __str__(self):
+        return self.title
+    
+
+class Banner(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    image = models.ImageField(upload_to="banners/images", null=True, blank=True)
+    link = models.URLField(null=True, blank=True)
+
+    def __str__(self):
+        return self.title

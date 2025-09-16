@@ -7,7 +7,8 @@ from rest_framework import permissions
 from rest_framework import authentication
 from rest_framework.response import Response
 
-from users.models import User, Date
+from users.models import Date, User
+from utils.worker import Worker
 
 from .models import (
     Course,
@@ -16,6 +17,8 @@ from .models import (
     Module,
     Rating,
     CourseRating,
+    Notification,
+    Banner,
 )
 from .serializers import (
     CourseRatingSerializer,
@@ -25,7 +28,45 @@ from .serializers import (
     SubjectSerializer,
     ModuleGETSerializer,
     RatingSerializer,
+    NotificationSerializer,
+    BannerSerializer,
 )
+
+
+def read_all(notifications: Notification, user: User):
+    for notification in notifications:
+        notification.readers.add(user)
+        notification.save()
+
+
+@decorators.api_view(http_method_names=["GET"])
+@decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
+@decorators.authentication_classes(authentication_classes=[authentication.TokenAuthentication])
+def get_notifications(request: HttpRequest):
+    notifications = Notification.objects.exclude(readers=request.user)
+
+    worker = Worker(read_all, notifications, request.user)
+    worker.start()
+
+    return Response({
+        "status": "success",
+        "code": "000",
+        "data": NotificationSerializer(notifications, many=True).data
+    })
+
+
+
+@decorators.api_view(http_method_names=["GET"])
+@decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
+@decorators.authentication_classes(authentication_classes=[authentication.TokenAuthentication])
+def get_banners(request: HttpRequest):
+    banners = Banner.objects.all()
+    return Response({
+        "status": "success",
+        "code": "000",
+        "data": BannerSerializer(banners, many=True).data
+    })
+
 
 
 @decorators.api_view(http_method_names=["GET"])
