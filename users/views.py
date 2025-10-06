@@ -20,7 +20,7 @@ def index(request):
 
 @decorators.api_view(http_method_names=["POST"])
 def login(request: HttpRequest):
-    username = request.data.get("email", "")
+    username = request.data.get("phone", "")
     password = request.data.get("password", "")
     user = User.objects.filter(username=username)
     if not user:
@@ -53,7 +53,7 @@ def login(request: HttpRequest):
 
 @decorators.api_view(http_method_names=["POST"])
 def signup(request: HttpRequest):
-    username = request.data.get("email")
+    username = request.data.get("phone")
     full_name = request.data.get("full_name")
     password = request.data.get("password")
 
@@ -94,7 +94,7 @@ def logout(request: HttpRequest):
 @decorators.api_view(http_method_names=["POST"])
 def change_password(requset: HttpRequest):
     user = requset.user
-    username = requset.data.get("email")
+    username = requset.data.get("phone")
     password = requset.data.get("password")
     if user.is_authenticated:
         user.set_password(password)
@@ -135,7 +135,7 @@ def profile(request: HttpRequest):
         "status": "success",
         "code": "profile-001", # success
         "data": {
-            "email": user.username,
+            "phone": user.username,
             "full_name": user.full_name,
             "duration": lessons.get("duration"),
             "image": image,

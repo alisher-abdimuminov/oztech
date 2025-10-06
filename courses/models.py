@@ -290,6 +290,8 @@ class Permission(models.Model):
             self.ended = date.today() + timedelta(days=182)
         else:
             self.ended = date.today() + timedelta(days=365)
+        self.course.students.add(self.user)
+        self.course.save()
         super(Permission, self).save(*args, **kwargs)
 
 
@@ -306,6 +308,7 @@ class Notification(models.Model):
     type = models.CharField(max_length=100)
     receivers = models.ManyToManyField(User, related_name="notification_receivers", blank=True)
     readers = models.ManyToManyField(User, related_name="notification_readers", blank=True)
+    created = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title

@@ -5,9 +5,9 @@ from .manager import UserManager
 
 
 class User(AbstractUser):
-    username = models.CharField(max_length=100, unique=True)
-    full_name = models.CharField(max_length=100)
-    image = models.ImageField(upload_to="images/users", null=True, blank=True)
+    username = models.CharField(max_length=100, unique=True, verbose_name="Telefon raqami")
+    full_name = models.CharField(max_length=100, verbose_name="Ism")
+    image = models.ImageField(upload_to="images/users", null=True, blank=True, verbose_name="Rasm")
 
     objects = UserManager()
 

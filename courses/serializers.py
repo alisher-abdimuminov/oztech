@@ -283,8 +283,6 @@ class CoursesGETSerializer(serializers.ModelSerializer):
     def is_open_func(self, obj: Course):
         request = self.context.get("request")
         if request:
-            obj.students.add(request.user)
-            obj.save()
             permission = Permission.objects.filter(user=request.user, course=obj)
             if permission:
                 permission = permission.first()

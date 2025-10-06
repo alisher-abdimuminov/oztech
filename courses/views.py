@@ -74,7 +74,13 @@ def get_banners(request: HttpRequest):
 @decorators.authentication_classes(authentication_classes=[authentication.TokenAuthentication])
 def get_courses_list(request: HttpRequest):
     subject_pk = request.GET.get("subject", 0)
+    is_free = request.GET.get("free", 0)
+    
     courses_obj = Course.objects.all()
+    
+    if is_free == 1 or is_free == "1":
+        courses_obj = courses_obj.filter(is_public=True)
+
     if subject_pk != 0:
         courses_obj = courses_obj.filter(subject_id=subject_pk)
     courses = CoursesGETSerializer(courses_obj, many=True, context={ "request": request })
