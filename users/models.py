@@ -8,6 +8,7 @@ class User(AbstractUser):
     username = models.CharField(max_length=100, unique=True, verbose_name="Telefon raqami")
     full_name = models.CharField(max_length=100, verbose_name="Ism")
     image = models.ImageField(upload_to="images/users", null=True, blank=True, verbose_name="Rasm")
+    fcm_token = models.CharField(max_length=1000)
 
     objects = UserManager()
 
