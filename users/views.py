@@ -53,9 +53,16 @@ def login(request: HttpRequest):
 
 @decorators.api_view(http_method_names=["POST"])
 def signup(request: HttpRequest):
-    username = request.data.get("phone", None)
+    username = request.data.get("phone")
     full_name = request.data.get("full_name")
     password = request.data.get("password")
+
+    if not username:
+        return Response({
+            "status": "error",
+            "code": "username_is_required",
+            "data": None
+        })
 
     user = User.objects.filter(username=username)
     if user:
