@@ -11,16 +11,17 @@ from .models import User, Contact
 class UserModelAdmin(UserAdmin, uadmin.ModelAdmin):
     add_form = UserCreationForm
     form = UserChangeForm
-    list_display = ["username", "full_name", "is_active",]
+    list_display = ["phone", "full_name", "is_active",]
+    ordering = []
     model = User
     fieldsets = (
         ("Foydalanuvchini tahrirlash", {
-            "fields": ("username", "full_name", "password", "is_active", )
+            "fields": ("phone", "full_name", "password", "is_active", )
         }), 
     )
     add_fieldsets = (
         ("Yangi foydalanuvchi qo'shish", {
-            "fields": ("username", "password1", "password2", "full_name", )
+            "fields": ("phone", "password1", "password2", "full_name", )
         }), 
     )
 

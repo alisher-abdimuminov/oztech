@@ -5,14 +5,15 @@ from .manager import UserManager
 
 
 class User(AbstractUser):
-    username = models.CharField(max_length=100, unique=True, verbose_name="Telefon raqami")
+    phone = models.CharField(max_length=100, unique=True, verbose_name="Telefon raqami")
+    username = None
     full_name = models.CharField(max_length=100, verbose_name="Ism")
     image = models.ImageField(upload_to="images/users", null=True, blank=True, verbose_name="Rasm")
     fcm_token = models.CharField(max_length=1000, null=True, blank=True)
 
     objects = UserManager()
 
-    USERNAME_FIELD = "username"
+    USERNAME_FIELD = "phone"
 
     def __str__(self):
         return self.username

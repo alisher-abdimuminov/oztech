@@ -20,13 +20,13 @@ def index(request):
 
 @decorators.api_view(http_method_names=["POST"])
 def login(request: HttpRequest):
-    username = request.data.get("phone", "")
+    phone = request.data.get("phone", "")
     password = request.data.get("password", "")
-    user = User.objects.filter(username=username)
+    user = User.objects.filter(phone=phone)
     if not user:
         return Response({
             "status": "error",
-            "code": "login-001", # username not found
+            "code": "login-001", # phone not found
             "data": None
         })
     user = user.first()
@@ -53,18 +53,18 @@ def login(request: HttpRequest):
 
 @decorators.api_view(http_method_names=["POST"])
 def signup(request: HttpRequest):
-    username = request.data.get("phone")
+    phone = request.data.get("phone")
     full_name = request.data.get("full_name")
     password = request.data.get("password")
 
-    if not username:
+    if not phone:
         return Response({
             "status": "error",
-            "code": "username_is_required",
+            "code": "phone_is_required",
             "data": None
         })
 
-    user = User.objects.filter(username=username)
+    user = User.objects.filter(phone=phone)
     if user:
         return Response({
             "status": "error",
@@ -73,7 +73,7 @@ def signup(request: HttpRequest):
         })
     
     user = User.objects.create(
-        username=username,
+        phone=phone,
         full_name=full_name,
     )
     user.set_password(password)
@@ -101,7 +101,7 @@ def logout(request: HttpRequest):
 @decorators.api_view(http_method_names=["POST"])
 def change_password(requset: HttpRequest):
     user = requset.user
-    username = requset.data.get("phone")
+    phone = requset.data.get("phone")
     password = requset.data.get("password")
     if user.is_authenticated:
         user.set_password(password)
@@ -112,7 +112,7 @@ def change_password(requset: HttpRequest):
             "data": None
         })
     else:
-        user = User.objects.get(username=username)
+        user = User.objects.get(phone=phone)
         user.set_password(password)
         user.save()
         return Response({
@@ -142,7 +142,7 @@ def profile(request: HttpRequest):
         "status": "success",
         "code": "profile-001", # success
         "data": {
-            "phone": user.username,
+            "phone": user.phone,
             "full_name": user.full_name,
             "duration": lessons.get("duration"),
             "image": image,
