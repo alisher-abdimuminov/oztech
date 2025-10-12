@@ -95,8 +95,16 @@ def get_courses_list(request: HttpRequest):
 @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
 @decorators.authentication_classes(authentication_classes=[authentication.TokenAuthentication])
 def get_course(request: HttpRequest, pk: int):
-    course_obj = Course.objects.get(pk=pk)
+    course_obj = Course.objects.filter(pk=pk)
     date = Date.objects.filter(user=request.user, course=course_obj)
+    if not course_obj:
+        return Response({
+            "status": "error",
+            "code": "404",
+            "data": None
+        })
+    course_obj = course_obj.first()
+    
     if date:
         date = date.first()
         if datetime.now().date() == date.ended:
