@@ -16,7 +16,7 @@ class User(AbstractUser):
     USERNAME_FIELD = "phone"
 
     def __str__(self):
-        return self.username
+        return self.phone
     
     class Meta:
         verbose_name = "Talaba"
