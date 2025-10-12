@@ -43,7 +43,7 @@ def read_all(notifications: Notification, user: User):
 @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
 @decorators.authentication_classes(authentication_classes=[authentication.TokenAuthentication])
 def get_notifications(request: HttpRequest):
-    notifications = Notification.objects.filter(receiver=request.user)
+    notifications = Notification.objects.filter(receivers=request.user)
 
     # worker = Worker(read_all, notifications=notifications, user=request.user)
     # worker.start()
