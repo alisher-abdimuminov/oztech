@@ -128,7 +128,8 @@ def my_courses(request: HttpRequest):
     user = request.user
     courses_obj = Course.objects.filter(students=user)
     courses = CoursesGETSerializer(courses_obj, many=True, context={ "request": request })
-    print(courses_obj)
+    print("User", user)
+    print("Course", courses_obj)
     return Response({
         "status": "success",
         "code": "200",
