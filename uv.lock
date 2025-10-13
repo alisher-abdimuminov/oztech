@@ -353,15 +353,15 @@ wheels = [
 
 [[package]]
 name = "django-unfold"
-version = "0.67.0"
+version = "0.44.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django", version = "4.2.23", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
     { name = "django", version = "5.2.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/22/92/a83a74f4a810a3b592892b55b0babe1a96a7aef83bf72dbaac51cd8697d2/django_unfold-0.67.0.tar.gz", hash = "sha256:94a918a2108b62419f6b8dcaef8351af13e75111b7139125f36985fabe68547a", size = 1078405, upload-time = "2025-09-30T08:31:55.105Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/3d/78/5f78083f7f6d447c88205fa448e53582d502621866e398bb4f54b94dde50/django_unfold-0.44.0.tar.gz", hash = "sha256:1a448c2ab993ab39811b5dede01f5b36066a2c7618b9db64c5f4b29aaa166b9c", size = 751418, upload-time = "2025-01-08T10:17:17.844Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/80/99/fdf2ddba83c090fb5840be6178d656efc8a03a52efaf5f04c82804fcea71/django_unfold-0.67.0-py3-none-any.whl", hash = "sha256:87939d7c2fbc8a39880d0af28c32f919515819e54bfbc3d845bb495852bf8da7", size = 1187388, upload-time = "2025-09-30T08:31:53.49Z" },
+    { url = "https://files.pythonhosted.org/packages/cb/44/2e78dd1c376b76bab58b9790eea3ec3b4ba7556d0c1acab9ccdadf9b1222/django_unfold-0.44.0-py3-none-any.whl", hash = "sha256:94da205caad9d5ba0d1a0542c2bacaadbf23d90bf176472214e53cecfc2e9469", size = 823946, upload-time = "2025-01-08T10:17:15.283Z" },
 ]
 
 [[package]]
@@ -822,7 +822,7 @@ dependencies = [
 requires-dist = [
     { name = "django", specifier = ">=4.2.23" },
     { name = "django-cors-headers", specifier = ">=4.7.0" },
-    { name = "django-unfold", specifier = ">=0.66.0" },
+    { name = "django-unfold", specifier = "==0.44.0" },
     { name = "djangorestframework", specifier = ">=3.16.1" },
     { name = "firebase-admin", specifier = ">=7.1.0" },
     { name = "gunicorn", specifier = ">=23.0.0" },
