@@ -1,14 +1,12 @@
 from datetime import datetime, timedelta
 
-from django.db.models import Q
 from django.http import HttpRequest
 from rest_framework import decorators
 from rest_framework import permissions
 from rest_framework import authentication
 from rest_framework.response import Response
 
-from users.models import Date, User
-from utils.worker import Worker
+from users.models import Date
 
 from .models import (
     Course,
@@ -33,159 +31,137 @@ from .serializers import (
 )
 
 
-def read_all(notifications: Notification, user: User):
-    for notification in notifications:
-        notification.readers.add(user)
-        notification.save()
-
-
 @decorators.api_view(http_method_names=["GET"])
 @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
-@decorators.authentication_classes(authentication_classes=[authentication.TokenAuthentication])
+@decorators.authentication_classes(
+    authentication_classes=[authentication.TokenAuthentication]
+)
 def get_notifications(request: HttpRequest):
     notifications = Notification.objects.filter(receivers=request.user)
 
     # worker = Worker(read_all, notifications=notifications, user=request.user)
     # worker.start()
 
-    return Response({
-        "status": "success",
-        "code": "000",
-        "data": NotificationSerializer(notifications, many=True).data
-    })
-
+    return Response(
+        {
+            "status": "success",
+            "code": "000",
+            "data": NotificationSerializer(notifications, many=True).data,
+        }
+    )
 
 
 @decorators.api_view(http_method_names=["GET"])
 @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
-@decorators.authentication_classes(authentication_classes=[authentication.TokenAuthentication])
+@decorators.authentication_classes(
+    authentication_classes=[authentication.TokenAuthentication]
+)
 def get_banners(request: HttpRequest):
     banners = Banner.objects.all()
-    return Response({
-        "status": "success",
-        "code": "000",
-        "data": BannerSerializer(banners, many=True).data
-    })
-
+    return Response(
+        {
+            "status": "success",
+            "code": "000",
+            "data": BannerSerializer(banners, many=True).data,
+        }
+    )
 
 
 @decorators.api_view(http_method_names=["GET"])
 @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
-@decorators.authentication_classes(authentication_classes=[authentication.TokenAuthentication])
+@decorators.authentication_classes(
+    authentication_classes=[authentication.TokenAuthentication]
+)
 def get_courses_list(request: HttpRequest):
     subject_pk = request.GET.get("subject", 0)
     is_free = request.GET.get("free", 0)
-    
+
     courses_obj = Course.objects.all()
-    
+
     if is_free == 1 or is_free == "1":
         courses_obj = courses_obj.filter(is_public=True)
 
     if subject_pk != 0:
         courses_obj = courses_obj.filter(subject_id=subject_pk)
-    courses = CoursesGETSerializer(courses_obj, many=True, context={ "request": request })
-    return Response({
-        "status": "success",
-        "code": "200",
-        "data": courses.data
-    })
+    courses = CoursesGETSerializer(courses_obj, many=True, context={"request": request})
+    return Response({"status": "success", "code": "200", "data": courses.data})
 
 
 @decorators.api_view(http_method_names=["GET"])
 @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
-@decorators.authentication_classes(authentication_classes=[authentication.TokenAuthentication])
+@decorators.authentication_classes(
+    authentication_classes=[authentication.TokenAuthentication]
+)
 def get_course(request: HttpRequest, pk: int):
     course_obj = Course.objects.filter(pk=pk)
     if not course_obj:
-        return Response({
-            "status": "error",
-            "code": "404",
-            "data": None
-        })
+        return Response({"status": "error", "code": "404", "data": None})
     course_obj = course_obj.first()
 
     date = Date.objects.filter(user=request.user, course=course_obj)
     if date:
         date = date.first()
         if datetime.now().date() == date.ended:
-            return Response({
-                "status": "error",
-                "code": "000",
-                "data": None
-            })
-    course = CourseGETSerializer(course_obj, many=False, context={ "request": request })
-    return Response({
-        "status": "success",
-        "code": "200",
-        "data": course.data
-    })
+            return Response({"status": "error", "code": "000", "data": None})
+    course = CourseGETSerializer(course_obj, many=False, context={"request": request})
+    return Response({"status": "success", "code": "200", "data": course.data})
 
 
 @decorators.api_view(http_method_names=["GET"])
 @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
-@decorators.authentication_classes(authentication_classes=[authentication.TokenAuthentication])
+@decorators.authentication_classes(
+    authentication_classes=[authentication.TokenAuthentication]
+)
 def my_courses(request: HttpRequest):
     user = request.user
     courses_obj = Course.objects.filter(students=user)
-    courses = CoursesGETSerializer(courses_obj, many=True, context={ "request": request })
+    courses = CoursesGETSerializer(courses_obj, many=True, context={"request": request})
     print("User", user)
     print("Course", courses_obj)
-    return Response({
-        "status": "success",
-        "code": "200",
-        "data": courses.data
-    })
+    return Response({"status": "success", "code": "200", "data": courses.data})
 
 
 @decorators.api_view(http_method_names=["GET"])
 @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
-@decorators.authentication_classes(authentication_classes=[authentication.TokenAuthentication])
+@decorators.authentication_classes(
+    authentication_classes=[authentication.TokenAuthentication]
+)
 def get_module(request: HttpRequest, pk1: int, pk2: int):
     module_obj = Module.objects.filter(id=pk2)
     if not module_obj:
-        return Response({
-            "status": "error",
-            "code": "404",
-            "data": None
-        })
+        return Response({"status": "error", "code": "404", "data": None})
     module_obj = module_obj.first()
     module = ModuleGETSerializer(module_obj, many=False)
-    return Response({
-        "status": "success",
-        "code": "200",
-        "data": module.data
-    })
+    return Response({"status": "success", "code": "200", "data": module.data})
 
 
 @decorators.api_view(http_method_names=["GET"])
 @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
-@decorators.authentication_classes(authentication_classes=[authentication.TokenAuthentication])
+@decorators.authentication_classes(
+    authentication_classes=[authentication.TokenAuthentication]
+)
 def get_lesson(request: HttpRequest, pk1: int, pk2: int, pk3: int):
     lesson_obj = Lesson.objects.get(pk=pk3)
-    lesson = LessonGETSerializer(lesson_obj, many=False, context={ "request": request })
-    return Response({
-        "status": "success",
-        "code": "200",
-        "data": lesson.data
-    })
+    lesson = LessonGETSerializer(lesson_obj, many=False, context={"request": request})
+    return Response({"status": "success", "code": "200", "data": lesson.data})
 
 
 @decorators.api_view(http_method_names=["GET"])
 @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
-@decorators.authentication_classes(authentication_classes=[authentication.TokenAuthentication])
+@decorators.authentication_classes(
+    authentication_classes=[authentication.TokenAuthentication]
+)
 def get_subjects(self):
     subjects_obj = Subject.objects.all()
     subjects = SubjectSerializer(subjects_obj, many=True)
-    return Response({
-        "status": "success",
-        "code": "200",
-        "data": subjects.data
-    })
+    return Response({"status": "success", "code": "200", "data": subjects.data})
 
 
 @decorators.api_view(http_method_names=["POST"])
 @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
-@decorators.authentication_classes(authentication_classes=[authentication.TokenAuthentication])
+@decorators.authentication_classes(
+    authentication_classes=[authentication.TokenAuthentication]
+)
 def post_rate(request: HttpRequest):
     course_pk = request.data.get("course")
     module_pk = request.data.get("module")
@@ -203,7 +179,9 @@ def post_rate(request: HttpRequest):
         course_rating.score += int(score)
         course_rating.save()
     else:
-        course_rating = CourseRating.objects.create(user=request.user, course=course, score=score)
+        course_rating = CourseRating.objects.create(
+            user=request.user, course=course, score=score
+        )
 
     rating = Rating.objects.create(
         user=request.user,
@@ -214,30 +192,32 @@ def post_rate(request: HttpRequest):
         percent=percent,
     )
 
-    return Response({
-        "status": "success",
-        "code": "200",
-        "data": None
-    })
+    return Response({"status": "success", "code": "200", "data": None})
 
 
 @decorators.api_view(http_method_names=["GET"])
 @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
-@decorators.authentication_classes(authentication_classes=[authentication.TokenAuthentication])
+@decorators.authentication_classes(
+    authentication_classes=[authentication.TokenAuthentication]
+)
 def get_rates(request: HttpRequest):
     ratings_obj = Rating.objects.filter(user=request.user)
     ratings = RatingSerializer(ratings_obj, many=True)
 
-    return Response({
-        "status": "success",
-        "code": "200",
-        "data": ratings.data,
-    })
+    return Response(
+        {
+            "status": "success",
+            "code": "200",
+            "data": ratings.data,
+        }
+    )
 
 
 @decorators.api_view(http_method_names=["POST"])
 @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
-@decorators.authentication_classes(authentication_classes=[authentication.TokenAuthentication])
+@decorators.authentication_classes(
+    authentication_classes=[authentication.TokenAuthentication]
+)
 def get_ratings(request: HttpRequest):
     course_id = request.data.get("course")
     type = request.data.get("type")
@@ -248,30 +228,38 @@ def get_ratings(request: HttpRequest):
     if type == "monthly":
         one_month_ago = now - timedelta(days=30)
         one_month_ago_as_str = one_month_ago.strftime("%Y-%m-%d")
-        ratings_obj = CourseRating.objects.filter(course=course, created__range=[one_month_ago_as_str, now_as_str]).order_by("-score")
+        ratings_obj = CourseRating.objects.filter(
+            course=course, created__range=[one_month_ago_as_str, now_as_str]
+        ).order_by("-score")
     elif type == "weekly":
         one_week_ago = now - timedelta(days=7)
         one_week_ago_as_str = one_week_ago.strftime("%Y-%m-%d")
-        ratings_obj = CourseRating.objects.filter(course=course, created__range=[one_week_ago_as_str, now_as_str]).order_by("-score")
+        ratings_obj = CourseRating.objects.filter(
+            course=course, created__range=[one_week_ago_as_str, now_as_str]
+        ).order_by("-score")
     # else:
     #     print(course)
     #     print(now)
     #     print(now_as_str)
     #     ratings_obj = CourseRating.objects.filter(course=course, created__day=now.day).order_by("-score")
     print(ratings_obj)
-    ratings = CourseRatingSerializer(ratings_obj, many=True, context={ "request": request })
-    return Response({
-        "status": "success",
-        "errors": {},
-        "data": {
-            "ratings": ratings.data
-        },
-    })
+    ratings = CourseRatingSerializer(
+        ratings_obj, many=True, context={"request": request}
+    )
+    return Response(
+        {
+            "status": "success",
+            "errors": {},
+            "data": {"ratings": ratings.data},
+        }
+    )
 
 
 @decorators.api_view(http_method_names=["POST"])
 @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
-@decorators.authentication_classes(authentication_classes=[authentication.TokenAuthentication])
+@decorators.authentication_classes(
+    authentication_classes=[authentication.TokenAuthentication]
+)
 def end_lesson(request: HttpRequest):
     lesson_id = request.data.get("lesson")
     lesson = Lesson.objects.get(pk=lesson_id)
@@ -298,8 +286,4 @@ def end_lesson(request: HttpRequest):
                     print(e)
                     pass
     lesson.finishers.add(request.user)
-    return Response({
-        "status": "success",
-        "errors": {},
-        "data": {}
-    })
+    return Response({"status": "success", "errors": {}, "data": {}})

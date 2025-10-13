@@ -156,7 +156,7 @@ def profile(request: HttpRequest):
 @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
 def edit_profile(request: HttpRequest):
     user_obj = request.user
-    user = UserSerializer(user_obj, data=request.data)
+    user = UserSerializer(user_obj, data=request.data, partial=True)
     if user.is_valid():
         user.save()
         return Response({

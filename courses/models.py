@@ -4,6 +4,8 @@ from django.dispatch import receiver
 from datetime import date, timedelta
 
 from users.models import User
+from utils.worker import Worker
+from utils.notify import notify
 
 
 LESSON_TYPE = (
@@ -322,3 +324,16 @@ class Banner(models.Model):
 
     def __str__(self):
         return self.title
+
+
+@receiver(post_save, sender=Course)
+def notify_new_course(sender, instance: Course, created, **kwargs):
+    if created:
+        users = User.objects.all()
+        notification = Notification.objects.create(
+            title="Yangi kurs qo'shildi",
+            description=f"{instance.name} - {instance.user.full_name}",
+            type="new_course",
+            receivers=users
+        )
+        worker = Worker()
