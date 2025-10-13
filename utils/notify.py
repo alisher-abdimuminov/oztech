@@ -1,15 +1,13 @@
 import firebase_admin
 from firebase_admin import credentials, messaging
 
-from courses.models import Notification
-from users.models import User
 
 
 cred = credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
 
 
-def notify(notification: Notification, users: User):
+def notify(notification, users):
     for user in users:
         if user.fcm_token:
             message = messaging.Message(
