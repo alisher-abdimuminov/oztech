@@ -353,15 +353,15 @@ wheels = [
 
 [[package]]
 name = "django-unfold"
-version = "0.63.0"
+version = "0.67.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django", version = "4.2.23", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
     { name = "django", version = "5.2.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/58/03/aeba7c10824f9631980e8342ab8d872c37b353e899c1e2dc5a94467b5abe/django_unfold-0.63.0.tar.gz", hash = "sha256:a32bb7c4a860a2e95a597778ce4f50f1d1a809a6ac06f6551dd0ebd371611cdf", size = 1067071, upload-time = "2025-07-21T07:04:18.269Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/22/92/a83a74f4a810a3b592892b55b0babe1a96a7aef83bf72dbaac51cd8697d2/django_unfold-0.67.0.tar.gz", hash = "sha256:94a918a2108b62419f6b8dcaef8351af13e75111b7139125f36985fabe68547a", size = 1078405, upload-time = "2025-09-30T08:31:55.105Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/17/68/2023a7dfaf2d967dc62ec68c506c00a022a192b7523e0506fab270d041e3/django_unfold-0.63.0-py3-none-any.whl", hash = "sha256:9bab010edc95965d1811aeca2ed1b7621aa5b5483e1c673146dc2d7b3b388ea4", size = 1175337, upload-time = "2025-07-21T07:04:16.599Z" },
+    { url = "https://files.pythonhosted.org/packages/80/99/fdf2ddba83c090fb5840be6178d656efc8a03a52efaf5f04c82804fcea71/django_unfold-0.67.0-py3-none-any.whl", hash = "sha256:87939d7c2fbc8a39880d0af28c32f919515819e54bfbc3d845bb495852bf8da7", size = 1187388, upload-time = "2025-09-30T08:31:53.49Z" },
 ]
 
 [[package]]
@@ -822,7 +822,7 @@ dependencies = [
 requires-dist = [
     { name = "django", specifier = ">=4.2.23" },
     { name = "django-cors-headers", specifier = ">=4.7.0" },
-    { name = "django-unfold", specifier = ">=0.63.0" },
+    { name = "django-unfold", specifier = ">=0.66.0" },
     { name = "djangorestframework", specifier = ">=3.16.1" },
     { name = "firebase-admin", specifier = ">=7.1.0" },
     { name = "gunicorn", specifier = ">=23.0.0" },
