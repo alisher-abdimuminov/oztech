@@ -121,7 +121,7 @@ class Course(models.Model):
         return Lesson.objects.filter(module__course=self).count()
     
     def count_quizzes(self) -> int:
-        return Test.objects.filter(lesson__course=self).count()
+        return Test.objects.filter(lesson__module__course=self).count()
     
     def count_resources(self) -> int:
         return Resource.objects.filter(lesson__module__course=self).count()
