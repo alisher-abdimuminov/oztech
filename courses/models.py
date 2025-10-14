@@ -378,8 +378,11 @@ class Banner(models.Model):
 
 @receiver(post_save, sender=Course)
 def notify_new_course(sender, instance: Course, created, **kwargs):
+    print("started")
     if created:
+        print("course is not new")
         return
+    print("course is new")
     users = User.objects.all()
     user_ids = list(User.objects.values_list("id", flat=True))
     notification = Notification.objects.create(
