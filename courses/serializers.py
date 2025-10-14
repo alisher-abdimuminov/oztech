@@ -317,6 +317,7 @@ class CoursesGETSerializer(serializers.ModelSerializer):
             "count_modules",
             "count_lessons",
             "count_students",
+            "count_quizzes",
             "is_open",
             "is_public",
             "rest",
