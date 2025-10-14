@@ -418,7 +418,7 @@ class LessonSerializer(serializers.ModelSerializer):
 
 
 class CourseRatingSerializer(serializers.ModelSerializer):
-    author = UserSerializer(User, many=False)
+    author = AuthorSerializer(User, many=False)
     course = CourseSerializer(Course, many=False)
 
     class Meta:
