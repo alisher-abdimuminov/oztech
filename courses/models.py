@@ -1,7 +1,7 @@
 from django.db import models
-from django.db.models.signals import post_save
 from django.dispatch import receiver
 from datetime import date, timedelta
+from django.db.models.signals import post_save
 
 from users.models import User
 from utils.worker import Worker
@@ -132,6 +132,15 @@ class Course(models.Model):
     class Meta:
         verbose_name = "Kurs"
         verbose_name_plural = "Kurslar"
+
+
+class CourseRating(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    time = models.IntegerField(default=0, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.author.phone} - {self.course.name}"
 
 
 class Module(models.Model):
@@ -266,17 +275,6 @@ class Rating(models.Model):
         return str(self.score)
 
 
-class CourseRating(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    score = models.IntegerField()
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return str(self.score)
-    
-
 class Permission(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
@@ -336,4 +334,5 @@ def notify_new_course(sender, instance: Course, created, **kwargs):
             type="new_course",
             receivers=users
         )
-        worker = Worker()
+        worker = Worker(notify, notification=notification, users=users)
+        worker.start()

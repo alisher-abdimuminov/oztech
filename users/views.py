@@ -7,8 +7,7 @@ from rest_framework import authentication
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
-from courses.models import Rating, Lesson
-from courses.serializers import RatingSerializer
+from courses.models import CourseRating, Lesson
 
 from .models import User, Contact
 from .serializers import UserSerializer
@@ -127,8 +126,7 @@ def change_password(requset: HttpRequest):
 @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
 def profile(request: HttpRequest):
     user: User = request.user
-    rating_obj = Rating.objects.filter(user=user)
-    rating = RatingSerializer(rating_obj, many=True)
+    course_rating = CourseRating.objects.filter(author=user)
     lessons = Lesson.objects.filter(finishers=user).aggregate(**{ "duration": Sum("duration") })
 
     image = user.image
@@ -146,7 +144,7 @@ def profile(request: HttpRequest):
             "full_name": user.full_name,
             "duration": lessons.get("duration"),
             "image": image,
-            "rating": rating.data,
+            "rating": course_rating.aggregate(total_time=Sum('time'))["total_time"]
         }
     })
 

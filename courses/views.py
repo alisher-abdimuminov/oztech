@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from django.http import HttpRequest
 from rest_framework import decorators
@@ -13,7 +13,6 @@ from .models import (
     Lesson,
     Subject,
     Module,
-    Rating,
     CourseRating,
     Notification,
     Banner,
@@ -25,10 +24,50 @@ from .serializers import (
     LessonGETSerializer,
     SubjectSerializer,
     ModuleGETSerializer,
-    RatingSerializer,
     NotificationSerializer,
     BannerSerializer,
 )
+
+
+
+@decorators.api_view(http_method_names=["POST"])
+@decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
+@decorators.authentication_classes(
+    authentication_classes=[authentication.TokenAuthentication]
+)
+def save_time(request: HttpRequest, pk: int):
+    time = int(request.data.get("time", 0))
+    course = Course.objects.filter(pk=pk)
+    user = request.user
+
+    if not course:
+        return Response({
+            "status": "error",
+            "code": "404",
+            "data": None
+        })
+    
+    course = course.first()
+
+    course_rating = CourseRating.objects.filter(author=user, course=course)
+
+    if not course_rating:
+        course_rating = CourseRating.objects.create(
+            author=user,
+            course=course,
+            time=int(time)
+        )
+
+    course_rating = course_rating.first()
+
+    course_rating.time = time
+    course_rating.save()
+
+    return Response({
+        "status": "success",
+        "code": "200",
+        "data": None
+    })
 
 
 @decorators.api_view(http_method_names=["GET"])
@@ -38,9 +77,6 @@ from .serializers import (
 )
 def get_notifications(request: HttpRequest):
     notifications = Notification.objects.filter(receivers=request.user)
-
-    # worker = Worker(read_all, notifications=notifications, user=request.user)
-    # worker.start()
 
     return Response(
         {
@@ -157,100 +193,28 @@ def get_subjects(self):
     return Response({"status": "success", "code": "200", "data": subjects.data})
 
 
-@decorators.api_view(http_method_names=["POST"])
-@decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
-@decorators.authentication_classes(
-    authentication_classes=[authentication.TokenAuthentication]
-)
-def post_rate(request: HttpRequest):
-    course_pk = request.data.get("course")
-    module_pk = request.data.get("module")
-    lesson_pk = request.data.get("lesson")
-    score = request.data.get("score")
-    percent = request.data.get("percent")
-
-    course = Course.objects.get(pk=course_pk)
-    module = Module.objects.get(pk=module_pk)
-    lesson = Lesson.objects.get(pk=lesson_pk)
-
-    course_rating = CourseRating.objects.filter(user=request.user, course=course)
-    if course_rating:
-        course_rating = course_rating.first()
-        course_rating.score += int(score)
-        course_rating.save()
-    else:
-        course_rating = CourseRating.objects.create(
-            user=request.user, course=course, score=score
-        )
-
-    rating = Rating.objects.create(
-        user=request.user,
-        course=course,
-        module=module,
-        lesson=lesson,
-        score=score,
-        percent=percent,
-    )
-
-    return Response({"status": "success", "code": "200", "data": None})
-
-
 @decorators.api_view(http_method_names=["GET"])
 @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
 @decorators.authentication_classes(
     authentication_classes=[authentication.TokenAuthentication]
 )
-def get_rates(request: HttpRequest):
-    ratings_obj = Rating.objects.filter(user=request.user)
-    ratings = RatingSerializer(ratings_obj, many=True)
+def get_course_ratings(request: HttpRequest, pk: int):
+    course = Course.objects.filter(pk=pk)
+
+    if not course:
+        return Response({
+            "status": "error",
+            "code": "404",
+            "data": None
+        })
+    course = course.first()
+    course_ratings = CourseRating.objects.filter(user=request.user, course=course).order_by("-time")
 
     return Response(
         {
             "status": "success",
             "code": "200",
-            "data": ratings.data,
-        }
-    )
-
-
-@decorators.api_view(http_method_names=["POST"])
-@decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
-@decorators.authentication_classes(
-    authentication_classes=[authentication.TokenAuthentication]
-)
-def get_ratings(request: HttpRequest):
-    course_id = request.data.get("course")
-    type = request.data.get("type")
-    course = Course.objects.get(pk=course_id)
-    now = datetime.now()
-    now_as_str = now.strftime("%Y-%m-%d")
-    ratings_obj = CourseRating.objects.filter(course=course).order_by("-score")
-    if type == "monthly":
-        one_month_ago = now - timedelta(days=30)
-        one_month_ago_as_str = one_month_ago.strftime("%Y-%m-%d")
-        ratings_obj = CourseRating.objects.filter(
-            course=course, created__range=[one_month_ago_as_str, now_as_str]
-        ).order_by("-score")
-    elif type == "weekly":
-        one_week_ago = now - timedelta(days=7)
-        one_week_ago_as_str = one_week_ago.strftime("%Y-%m-%d")
-        ratings_obj = CourseRating.objects.filter(
-            course=course, created__range=[one_week_ago_as_str, now_as_str]
-        ).order_by("-score")
-    # else:
-    #     print(course)
-    #     print(now)
-    #     print(now_as_str)
-    #     ratings_obj = CourseRating.objects.filter(course=course, created__day=now.day).order_by("-score")
-    print(ratings_obj)
-    ratings = CourseRatingSerializer(
-        ratings_obj, many=True, context={"request": request}
-    )
-    return Response(
-        {
-            "status": "success",
-            "errors": {},
-            "data": {"ratings": ratings.data},
+            "data": CourseRatingSerializer(course_ratings, many=True).data,
         }
     )
 

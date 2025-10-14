@@ -11,7 +11,6 @@ from .models import (
     Module,
     Question,
     Quiz,
-    Rating,
     Subject,
     Permission,
     Video,
@@ -418,31 +417,14 @@ class LessonSerializer(serializers.ModelSerializer):
         )
 
 
-class RatingSerializer(serializers.ModelSerializer):
-    course = CourseSerializer(Course, many=False)
-    module = ModuleSerializer(Module, many=False)
-    lesson = LessonSerializer(Lesson, many=False)
-
-    class Meta:
-        model = Rating
-        fields = (
-            "course",
-            "module",
-            "lesson",
-            "score",
-            "percent",
-            "created",
-        )
-
-
 class CourseRatingSerializer(serializers.ModelSerializer):
+    author = UserSerializer(User, many=False)
     course = CourseSerializer(Course, many=False)
-    user = UserSerializer(User, many=False)
 
     class Meta:
         model = CourseRating
         fields = (
-            "user",
+            "author",
             "course",
-            "score",
+            "time",
         )
