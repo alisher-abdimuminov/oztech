@@ -8,6 +8,7 @@ firebase_admin.initialize_app(cred)
 
 
 def notify(notification, users):
+    print("users", users)
     for user in users:
         if user.fcm_token:
             message = messaging.Message(
