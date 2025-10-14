@@ -57,8 +57,8 @@ def save_time(request: HttpRequest, pk: int):
             course=course,
             time=int(time)
         )
-
-    course_rating = course_rating.first()
+    else:
+        course_rating = course_rating.first()
 
     course_rating.time = time
     course_rating.save()
