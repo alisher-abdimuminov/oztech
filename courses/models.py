@@ -343,11 +343,37 @@ class Permission(models.Model):
         super(Permission, self).save(*args, **kwargs)
 
 
+@receiver(post_save, sender=Permission)
+def notify_course_allowed(sender, instance: Permission, created, **kwargs):
+    if created:
+        notification = Notification.objects.create(
+            title="Kursga ruxsat berildi",
+            description=f"{instance.course.name} - {instance.type}",
+            type="course_permission",
+        )
+        notification.receivers.add(instance.user)
+
+        worker = Worker(notify, notification=notification, users=[instance.user])
+        worker.start()
+
+
 @receiver(post_save, sender=Lesson)
-def notify_model_saved(sender, instance: Lesson, created, **kwargs):
+def notify_lesson_saved(sender, instance: Lesson, created, **kwargs):
     if instance.previous:
         instance.previous.next = instance
         instance.previous.save()
+    if created:
+        users = instance.module.course.students.all()
+        user_ids = list(User.objects.values_list("id", flat=True))
+        notification = Notification.objects.create(
+            title="Yangi dars qo'shildi",
+            description=f"{instance.module.course.name} - {instance.name}",
+            type="new_lesson",
+        )
+        notification.receivers.set(user_ids)
+
+        worker = Worker(notify, notification=notification, users=users)
+        worker.start()
 
 
 class Notification(models.Model):
@@ -374,11 +400,26 @@ class Banner(models.Model):
 
     def __str__(self):
         return self.title
+    
+
+@receiver(post_save, sender=Banner)
+def notify_new_banner(sender, instance: Banner, created, **kwargs):
+    if created:
+        users = User.objects.all()
+        user_ids = list(User.objects.values_list("id", flat=True))
+        notification = Notification.objects.create(
+            title=instance.title,
+            description=instance.description,
+            type="new_banner",
+        )
+        notification.receivers.set(user_ids)
+
+        worker = Worker(notify, notification=notification, users=users)
+        worker.start()
 
 
 @receiver(post_save, sender=Course)
 def notify_new_course(sender, instance: Course, created, **kwargs):
-    print("started")
     if created:
         users = User.objects.all()
         user_ids = list(User.objects.values_list("id", flat=True))
