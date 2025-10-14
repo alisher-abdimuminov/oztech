@@ -380,19 +380,14 @@ class Banner(models.Model):
 def notify_new_course(sender, instance: Course, created, **kwargs):
     print("started")
     if created:
-        print("course is not new")
-        return
-    print("course is new")
-    users = User.objects.all()
-    user_ids = list(User.objects.values_list("id", flat=True))
-    notification = Notification.objects.create(
-        title="Yangi kurs qo'shildi",
-        description=f"{instance.name} - {instance.user.full_name}",
-        type="new_course",
-    )
-    notification.receivers.set(user_ids)
+        users = User.objects.all()
+        user_ids = list(User.objects.values_list("id", flat=True))
+        notification = Notification.objects.create(
+            title="Yangi kurs qo'shildi",
+            description=f"{instance.name} - {instance.user.full_name}",
+            type="new_course",
+        )
+        notification.receivers.set(user_ids)
 
-    worker = Worker(notify, notification=notification, users=users)
-    worker.start()
-
-    transaction.on_commit()
+        worker = Worker(notify, notification=notification, users=users)
+        worker.start()
