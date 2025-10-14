@@ -208,7 +208,7 @@ def get_course_ratings(request: HttpRequest, pk: int):
             "data": None
         })
     course = course.first()
-    course_ratings = CourseRating.objects.filter(user=request.user, course=course).order_by("-time")
+    course_ratings = CourseRating.objects.filter(author=request.user, course=course).order_by("-time")
 
     return Response(
         {
